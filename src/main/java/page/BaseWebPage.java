@@ -112,7 +112,7 @@ public class BaseWebPage {
      * @param identifier String -> Element unique identifier
      * @return List -> list of web elements
      */
-    protected List<WebElement> findElements(int by, String identifier){
+    protected List<WebElement> getElements(int by, String identifier){
         switch (by){
             case XPATH:
                 try {
@@ -135,6 +135,21 @@ public class BaseWebPage {
             default:
                 return null;
         }
+    }
+
+    /**
+     * Retrieves and returns elements attribute
+     *
+     * @param by int -> identifier:
+     *           1 - xPath,
+     *           2 - Id,
+     *           3 - Class name
+     * @param identifier String -> Element unique identifier
+     * @return String -> attribute
+     */
+    protected String getElementsAttribute (int by, String identifier, String attribute){
+        WebElement element = findElement(by, identifier);
+        return (element != null) ? element.getAttribute(attribute) : "";
     }
 
     /**
@@ -214,7 +229,7 @@ public class BaseWebPage {
      *
      * @param identifier String -> element xPath
      */
-    public void waitForVisibilityOfElementByXpath(String identifier){
+    protected void waitForVisibilityOfElementByXpath(String identifier){
         mWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(identifier)));
     }
 
@@ -223,8 +238,23 @@ public class BaseWebPage {
      *
      * @param identifier String -> element xPath
      */
-    public void waitForInvisibilityOfElementByXpath(String identifier){
+    protected void waitForInvisibilityOfElementByXpath(String identifier){
         mWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(identifier)));
+    }
+
+    /**
+     * Finds and returns web element on the page
+     * Can be used from child classes
+     *
+     * @param by int -> identifier:
+     *           1 - xPath,
+     *           2 - Id,
+     *           3 - Class name
+     * @param identifier String -> Element unique identifier
+     * @return WebElement
+     */
+    protected WebElement getElement(int by, String identifier){
+        return findElement(by, identifier);
     }
 
     /**
