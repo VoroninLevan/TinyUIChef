@@ -42,7 +42,7 @@ public class Driver {
                 }
                 break;
             case "chrome":
-                System.setProperty("webdriver.gecko.driver", CHROME_DRIVER);
+                System.setProperty("webdriver.chrome.driver", CHROME_DRIVER);
                 mDriver = new ChromeDriver();
                 if (mIsFullscreen){
                     mDriver.manage().window().fullscreen();
