@@ -18,6 +18,7 @@ public class BaseWebTest {
         ParameterReader reader = new ParameterReader();
         Driver driver = new Driver(reader);
         mDriver = driver.getDriver();
+        System.out.println("Web exec");
     }
 
     @AfterMethod

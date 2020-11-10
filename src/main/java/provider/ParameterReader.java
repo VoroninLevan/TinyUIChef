@@ -16,7 +16,7 @@ public class ParameterReader {
 
     private String mProfile;
     private int mWidth, mHeight;
-    private boolean mIsFullscreen;
+    private boolean mIsFullscreen, mHeadless;
 
     private XPath mXPath;
     private XPathExpression mExpression;
@@ -30,12 +30,48 @@ public class ParameterReader {
     }
 
     /**
+     * Getter for custom boolean value
+     *
+     * @return boolean
+     */
+    public boolean getCustomBoolean(String tag){
+        return parseCustomBoolean(tag);
+    }
+
+    /**
+     * Getter for custom int value
+     *
+     * @return int
+     */
+    public int getCustomInt(String tag){
+        return parseCustomInt(tag);
+    }
+
+    /**
+     * Getter for custom String value
+     *
+     * @return String
+     */
+    public String getCustomString(String tag){
+        return parseCustomString(tag);
+    }
+
+    /**
      * Getter for 'fullscreen' value
      *
      * @return boolean -> 'fullscreen' value
      */
     public boolean getFullscreen(){
         return mIsFullscreen;
+    }
+
+    /**
+     * Getter for 'headless' value
+     *
+     * @return boolean -> 'headless' value
+     */
+    public boolean getHeadless(){
+        return mHeadless;
     }
 
     /**
@@ -69,10 +105,59 @@ public class ParameterReader {
      * Reads parameters from 'parameters.xml'
      */
     private void readParameters() {
+        mHeadless = parseHeadless();
         mProfile = parseProfile();
         mIsFullscreen = parseFullscreen();
         mWidth = parseWidth();
         mHeight = parseHeight();
+    }
+
+    /**
+     * Parses custom tag boolean value from
+     *
+     * @return boolean
+     */
+    private boolean parseCustomBoolean(String tag){
+        try {
+            mExpression = mXPath.compile("/parameters/custom/" + tag + "/text()");
+            return  Boolean.parseBoolean((String) mExpression.evaluate(mDocument, XPathConstants.STRING));
+        } catch (XPathExpressionException e){
+            logger.log(Level.WARNING,
+                    "There was an issue parsing fullscreen parameter. Please refer to the following error: " + e);
+            return false;
+        }
+    }
+
+    /**
+     * Parses custom tag int value from
+     *
+     * @return int
+     */
+    private int parseCustomInt(String tag){
+        try {
+            mExpression = mXPath.compile("/parameters/custom/" + tag + "/text()");
+            return  Integer.parseInt((String) mExpression.evaluate(mDocument, XPathConstants.STRING));
+        } catch (XPathExpressionException e){
+            logger.log(Level.WARNING,
+                    "There was an issue parsing fullscreen parameter. Please refer to the following error: " + e);
+            return -1;
+        }
+    }
+
+    /**
+     * Parses custom tag String value from
+     *
+     * @return String
+     */
+    private String parseCustomString(String tag){
+        try {
+            mExpression = mXPath.compile("/parameters/custom/" + tag + "/text()");
+            return  (String) mExpression.evaluate(mDocument, XPathConstants.STRING);
+        } catch (XPathExpressionException e){
+            logger.log(Level.WARNING,
+                    "There was an issue parsing fullscreen parameter. Please refer to the following error: " + e);
+            return null;
+        }
     }
 
     /**
@@ -87,6 +172,22 @@ public class ParameterReader {
         } catch (XPathExpressionException e){
             logger.log(Level.WARNING,
                     "There was an issue parsing fullscreen parameter. Please refer to the following error: " + e);
+            return false;
+        }
+    }
+
+    /**
+     * Parses 'headless' value from 'parameters.xml'
+     *
+     * @return boolean -> 'headless' value
+     */
+    private boolean parseHeadless(){
+        try {
+            mExpression = mXPath.compile("/parameters/browser/headless/text()");
+            return  Boolean.parseBoolean((String) mExpression.evaluate(mDocument, XPathConstants.STRING));
+        } catch (XPathExpressionException e){
+            logger.log(Level.WARNING,
+                    "There was an issue parsing headless parameter. Please refer to the following error: " + e);
             return false;
         }
     }
